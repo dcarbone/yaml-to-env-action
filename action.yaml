@@ -2,6 +2,10 @@ name: YAML to ENV
 description: |
   Parse all keys & values out of a YAML file, adding them to the $GITHUB_ENV file
 
+branding:
+  icon: copy
+  color: blue
+
 inputs:
   yaml-file:
     required: true
