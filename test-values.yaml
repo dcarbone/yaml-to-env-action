@@ -1,0 +1,38 @@
+string: hello there
+string_quoted: 'hello there'
+string_inner_quoted: 'hello "there"'
+string_multiline: |
+  This is some multiline text
+  this is pretty cool
+  the quork brewn facs jammed über teh cndl
+
+string_multiline_bar: |-
+  This is some multiline text
+  this is pretty cool
+  the quork brewn facs jammed über teh cndl
+
+# root comment
+
+number: 5 # value comment
+float: 5.5
+
+object:
+  key1: value1
+  key2: 2
+  key3:
+    - nested value 1
+    - nested value 2
+    - nested value "3"
+
+array:
+  - one
+  - two
+  -
+    - nested one # nested value comment
+
+string_with_equals: value = yep
+
+string_multiline_with_equals: |
+  value
+  =
+  yep

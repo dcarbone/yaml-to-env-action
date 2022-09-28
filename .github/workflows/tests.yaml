@@ -1,0 +1,123 @@
+name: 'Tests - YAML to Env action'
+
+on:
+  workflow_dispatch:
+
+  push:
+    branches:
+      - main
+    paths:
+      - 'action.yaml'
+      - '.github/workflows/tests.yaml'
+      - 'test-values.yaml'
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Test Action
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Execute action
+        uses: dcarbone/yaml-to-env-action@main
+        with:
+          yaml-file: test-values.yaml
+          debug: 'true'
+
+      - name: Test env
+        run: |
+          _EXPECTED_ENVS=(
+            "STRING"
+            "hello there"
+            '${{ env.STRING }}'
+          
+            "STRING_QUOTED"
+            "hello there"
+            '${{ env.STRING_QUOTED }}'
+          
+            "STRING_INNER_QUOTED"
+            'hello "there"'
+            '${{ env.STRING_INNER_QUOTED }}'
+            
+            "STRING_MULTILINE"
+            'This is some multiline text
+          this is pretty cool
+          the quork brewn facs jammed über teh cndl
+          '
+            '${{ env.STRING_MULTILINE }}'
+          
+            "STRING_MULTILINE_BAR"
+            'This is some multiline text
+          this is pretty cool
+          the quork brewn facs jammed über teh cndl'
+            '${{ env.STRING_MULTILINE_BAR }}'
+          
+            "NUMBER"
+            "5"
+            '${{ env.NUMBER }}'
+          
+            "FLOAT"
+            "5.5"
+            '${{ env.FLOAT }}'
+          
+            "OBJECT_KEY1"
+            "value1"
+            '${{ env.OBJECT_KEY1 }}'
+          
+            "OBJECT_KEY2"
+            "2"
+            '${{ env.OBJECT_KEY2 }}'
+          
+            "OBJECT_KEY3_0"
+            "nested value 1"
+            '${{ env.OBJECT_KEY3_0 }}'
+          
+            "OBJECT_KEY3_1"
+            "nested value 2"
+            '${{ env.OBJECT_KEY3_1 }}'
+          
+            "OBJECT_KEY3_2"
+            'nested value "3"'
+            '${{ env.OBJECT_KEY3_2 }}'
+          
+            "ARRAY_0"
+            "one"
+            '${{ env.ARRAY_0 }}'
+          
+            "ARRAY_1"
+            "two"
+            '${{ env.ARRAY_1 }}'
+          
+            "ARRAY_2_0"
+            "nested one"
+            '${{ env.ARRAY_2_0 }}'
+          
+            "STRING_WITH_EQUALS"
+            'value = yep'
+            '${{ env.STRING_WITH_EQUALS }}'
+          
+            "STRING_MULTILINE_WITH_EQUALS"
+            'value
+          =
+          yep
+          '
+            '${{ env.STRING_MULTILINE_WITH_EQUALS }}'
+          )
+          
+          for (( i=0; i < "${#_EXPECTED_ENVS[@]}"; i+=3 )); do
+            _env="${_EXPECTED_ENVS[$i]}"
+            _exp="${_EXPECTED_ENVS[$i+1]}"
+            _act="${_EXPECTED_ENVS[$i+2]}"
+          
+            if [[ "${_act}" != "${_exp}" ]]; then
+              echo "Environment variable \"${_env}\" value mismatch:"
+              echo "  Expected: \"${_exp}\""
+              echo "  Actual:   \"${_act}\""
+          
+              exit 1
+            fi
+          done
