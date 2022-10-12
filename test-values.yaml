@@ -36,3 +36,9 @@ string_multiline_with_equals: |
   value
   =
   yep
+
+hyphenated-key: hi there.
+
+second-hyphenated-key: hi there.
+
+'KEY$with weird*$!': what have you got.

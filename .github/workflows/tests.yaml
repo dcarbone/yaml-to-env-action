@@ -106,6 +106,18 @@ jobs:
           yep
           '
             '${{ env.STRING_MULTILINE_WITH_EQUALS }}'
+          
+            'HYPHENATED_KEY'
+            "hi there."
+            '${{ env.HYPHENATED_KEY }}'
+          
+            'SECOND_HYPHENATED_KEY'
+            'hi there.'
+            '${{ env.SECOND_HYPHENATED_KEY }}'
+          
+            'KEY_WITH__WEIRD___'
+            'what have you got.'
+            '${{ env.KEY_WITH__WEIRD___ }}'
           )
           
           for (( i=0; i < "${#_EXPECTED_ENVS[@]}"; i+=3 )); do

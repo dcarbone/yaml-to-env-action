@@ -41,9 +41,9 @@ runs:
       run: |
         _yq_bin="$(which yq)"
         if [ -f "${_yq_bin}" ]; then
-          echo "::set-output name=found::true"
+          echo "found=true" >> $GITHUB_OUTPUT
         else
-          echo "::set-output name=found::false"
+          echo "found=false" >> $GITHUB_OUTPUT
         fi
 
     - name: 'Install yq (${{ inputs.yq-version }})'
@@ -61,7 +61,7 @@ runs:
         function _ltrim_one { printf '%s' "${1}" | sed 's/^[[:blank:]]//'; }
         function _rtrim_one { printf '%s' "${1}" | sed 's/[[:blank:]]$//'; }
         function _upper() { printf '%s' "${1}" | tr '[:lower:]' '[:upper:]'; }
-        function _env_name() {  _upper "${1}" | tr '.' '_'; }
+        function _env_name() {  _upper "${1}" | sed -E 's/[^a-zA-Z0-9_]/_/g'; }
         
         _write_env_file_line() {
           _debug_log "${1} >> $GITHUB_ENV"
