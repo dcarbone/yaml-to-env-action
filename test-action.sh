@@ -8,7 +8,7 @@ function _trim() { printf '%s' "${1}" | sed 's/^[[:blank:]]*//; s/[[:blank:]]*$/
 function _ltrim_one { printf '%s' "${1}" | sed 's/^[[:blank:]]//'; }
 function _rtrim_one { printf '%s' "${1}" | sed 's/[[:blank:]]$//'; }
 function _upper() { printf '%s' "${1}" | tr '[:lower:]' '[:upper:]'; }
-function _env_name() {  _upper "${1}" | tr '.' '_'; }
+function _env_name() {  _upper "${1}" | sed -E 's/[^a-zA-Z0-9_]/_/g'; }
 
 _write_env_file_line() {
   _debug_log "${1} >> $GITHUB_ENV"
@@ -79,5 +79,5 @@ _parse_yq_output() {
 }
 
 _debug_log "Writing to \"$GITHUB_ENV\":"
-_all_fields="$(yq -o p '.' "$(pwd)/test.inputs.yaml")"
+_all_fields="$(yq -o p '.' "$(pwd)/test-values.yaml")"
 _parse_yq_output "${_all_fields}"
