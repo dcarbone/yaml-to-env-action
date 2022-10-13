@@ -62,7 +62,7 @@ Key to env name happens using the following script:
 tr '[:lower:]' '[:upper:]' | sed -E 's/[^a-zA-Z0-9_]/_/g';
 ```
 
-You can see the exact logic [here](./action.yaml#L64)
+You can see the exact logic [here](./scripts/yaml-to-env.sh#L9)
 
 #### Simple
 
