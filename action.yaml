@@ -39,7 +39,7 @@ runs:
       id: install-yq
       uses: dcarbone/install-yq-action@v1.0.0
       with:
-        yq-version: '${{ inputs.yq-version }}'
+        version: '${{ inputs.yq-version }}'
 
     - name: YAML to ENV
       shell: bash
