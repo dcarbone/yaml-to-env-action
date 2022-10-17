@@ -12,7 +12,7 @@ inputs:
     description: "Filepath to YAML to parse"
   yq-version:
     required: false
-    default: "4.27.5"
+    default: "v4.27.5"
     description: "Version of yq to install, if not already in path.  Tested with >= 4.25."
   debug:
     required: false
@@ -22,7 +22,7 @@ inputs:
 outputs:
   yq-installed:
     description: "'true' if yq was installed by this action"
-    value: "${{ steps.yq-check.outputs.found == 'false' }}"
+    value: "${{ steps.install-yq.outputs.installed == 'false' }}"
 
 runs:
   using: composite
@@ -35,20 +35,9 @@ runs:
           exit 1
         fi
 
-    - name: Check for yq
-      id: yq-check
-      shell: bash +e {0}
-      run: |
-        _yq_bin="$(which yq)"
-        if [ -f "${_yq_bin}" ]; then
-          echo "found=true" >> $GITHUB_OUTPUT
-        else
-          echo "found=false" >> $GITHUB_OUTPUT
-        fi
-
     - name: 'Install yq (${{ inputs.yq-version }})'
-      uses: chrisdickinson/setup-yq@latest
-      if: steps.yq-check.outputs.found == 'false'
+      id: install-yq
+      uses: dcarbone/install-yq-action@v1.0.0
       with:
         yq-version: '${{ inputs.yq-version }}'
 
