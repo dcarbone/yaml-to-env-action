@@ -38,11 +38,8 @@ _join_by() {
 _yaml_keys=()
 _env_names=()
 
-_all_fields="$(yq -o p '.' "$YAMLTOENV_YAML_FILE")"
-_parse_yq_output "${_all_fields}"
-
 _lines=()
-readarray -t _lines <<< "${1}"
+readarray -t _lines <<< "$(yq -o p '.' "$YAMLTOENV_YAML_FILE")"
 
 for _line in "${_lines[@]}"; do
   if [ -z "${_line}" ]; then
