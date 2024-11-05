@@ -12,17 +12,25 @@ inputs:
     description: "Filepath to YAML to parse"
   yq-version:
     required: false
-    default: "v4.27.5"
     description: "Version of yq to install, if not already in path.  Tested with >= 4.25."
-  debug:
+  mask-vars:
     required: false
     default: "false"
-    description: "Enable debug logging.  This WILL print un-masked secrets to stdout, so use with caution."
+    description: "Add value masking to all exported envvars (https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#example-masking-an-environment-variable)"
 
 outputs:
   yq-installed:
     description: "'true' if yq was installed by this action"
     value: "${{ steps.install-yq.outputs.installed == 'false' }}"
+  var-count:
+    description: "Number of environment variables defined from source YAML file."
+    value: "${{ steps.y2e.outputs.var-count }}"
+  yaml-keys:
+    description: "Comma-separated string of keys extracted from source YAML file."
+    value: "${{ steps.y2e.outputs.yaml-keys }}"
+  env-names:
+    description: "Comma-separated string of exported environment variable names"
+    value: "${{ steps.y2e.outputs.env-names }}"
 
 runs:
   using: composite
@@ -37,13 +45,14 @@ runs:
 
     - name: 'Install yq (${{ inputs.yq-version }})'
       id: install-yq
-      uses: dcarbone/install-yq-action@v1.0.0
+      uses: dcarbone/install-yq-action@v1
       with:
         version: '${{ inputs.yq-version }}'
 
     - name: YAML to ENV
+      id: y2e
       shell: bash
       run: $GITHUB_ACTION_PATH/scripts/yaml-to-env.sh
       env:
-        YAMLTOENV_DEBUG: '${{ inputs.debug }}'
+        YAMLTOENV_MASK_VARS: '${{ inputs.mask-vars }}'
         YAMLTOENV_YAML_FILE: '${{ inputs.yaml-file }}'

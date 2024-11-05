@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-function _debug_log () { if [[ $YAMLTOENV_DEBUG == 'true' ]]; then printf '[DEBUG] - %s' "${@}"; echo ""; fi; }
 function _join_by { local IFS="$1"; shift; echo "$*"; }
 function _trim() { printf '%s' "${1}" | sed 's/^[[:blank:]]*//; s/[[:blank:]]*$//'; }
 function _ltrim_one { printf '%s' "${1}" | sed 's/^[[:blank:]]//'; }
@@ -9,7 +8,6 @@ function _upper() { printf '%s' "${1}" | tr '[:lower:]' '[:upper:]'; }
 function _env_name() {  _upper "${1}" | sed -E 's/[^a-zA-Z0-9_]/_/g'; }
 
 _write_env_file_line() {
-  _debug_log "${1} >> $GITHUB_ENV"
   printf '%s' "${1}" | sed -e 's/\\n/\n/g' >> $GITHUB_ENV
   printf '\n' >> $GITHUB_ENV
 }
@@ -30,52 +28,49 @@ _write_kv_to_env_file() {
   fi
 }
 
-_parse_yq_output() {
-  local _lines
-  local _line
-  local _split
-  local _key
-  local _value
-  local _clean_value
-
-  _lines=()
-  readarray -t _lines <<< "${1}"
-
-  _debug_log "${#_lines[@]} possible value(s) and / or comments seen in file"
-
-  for _line in "${_lines[@]}"; do
-    _debug_log "_line='${_line}'"
-
-    if [ -z "${_line}" ]; then
-      _debug_log "Skipping empty line"
-      continue
-    fi
-
-    if [[ "${_line}" =~ ^# ]]; then
-      _debug_log "Skipping comment line \"${_line}\""
-      continue
-    fi
-
-    _split=()
-    IFS=$'='; read -r -a _split <<< "${_line}"
-
-    for (( i=0; i < "${#_split[@]}"; i++ )); do
-      _debug_log "_split.${i}='${_split[$i]}'"
-    done
-
-    _key="$(_rtrim_one "${_split[0]}")"
-    _value="$(_join_by '=' "${_split[@]:1}")"
-    _clean_value="$(_ltrim_one "${_value}")"
-
-    _debug_log "_key='${_key}'"
-    _debug_log "_value='${_value}'"
-    _debug_log "_clean_value='${_clean_value}'"
-
-    _write_kv_to_env_file "${_key}" "${_clean_value}"
-
-  done
+# sourced from https://stackoverflow.com/a/17841619
+_join_by() {
+  local IFS="$1"
+  shift
+  echo "$*"
 }
 
-_debug_log "Writing to \"$GITHUB_ENV\":"
-_all_fields="$(yq -o p '.' $YAMLTOENV_YAML_FILE)"
+_yaml_keys=()
+_env_names=()
+
+_all_fields="$(yq -o p '.' "$YAMLTOENV_YAML_FILE")"
 _parse_yq_output "${_all_fields}"
+
+_lines=()
+readarray -t _lines <<< "${1}"
+
+for _line in "${_lines[@]}"; do
+  if [ -z "${_line}" ]; then
+    continue
+  fi
+
+  if [[ "${_line}" =~ ^# ]]; then
+    continue
+  fi
+
+  _split=()
+  IFS=$'='; read -r -a _split <<< "${_line}"
+
+  _key="$(_rtrim_one "${_split[0]}")"
+  _value="$(_join_by '=' "${_split[@]:1}")"
+  _clean_value="$(_ltrim_one "${_value}")"
+
+  if [[ "${YAMLTOENV_MASK_VARS}" == 'true' ]]; then
+    echo "::add-mask::${_clean_value}"
+  fi
+
+  _yaml_keys+=("${_key}")
+  _env_names+=("$(_env_name "${_key}")")
+
+  _write_kv_to_env_file "${_key}" "${_clean_value}"
+
+done
+
+echo "var-count=${#_env_names[@]}" >> $GITHUB_OUTPUT
+echo "yaml-keys=$(_join_by "," "${_yaml_keys[@]}")" >> $GITHUB_OUTPUT
+echo "env-names=$(_join_by "," "${_env_names[@]}")" >> $GITHUB_OUTPUT
