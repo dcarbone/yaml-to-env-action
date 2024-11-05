@@ -8,8 +8,8 @@ function _upper() { printf '%s' "${1}" | tr '[:lower:]' '[:upper:]'; }
 function _env_name() {  _upper "${1}" | sed -E 's/[^a-zA-Z0-9_]/_/g'; }
 
 _write_env_file_line() {
-  printf '%s' "${1}" | sed -e 's/\\n/\n/g' >> $GITHUB_ENV
-  printf '\n' >> $GITHUB_ENV
+  printf '%s' "${1}" | sed -e 's/\\n/\n/g' >> "$GITHUB_ENV"
+  printf '\n' >> "$GITHUB_ENV"
 }
 
 _write_kv_to_env_file() {
@@ -58,7 +58,7 @@ for _line in "${_lines[@]}"; do
   _clean_value="$(_ltrim_one "${_value}")"
 
   if [[ "${YAMLTOENV_MASK_VARS}" == 'true' ]]; then
-    echo "::add-mask::${_clean_value}"
+    echo "::add-mask::$_clean_value"
   fi
 
   _yaml_keys+=("${_key}")
@@ -68,6 +68,6 @@ for _line in "${_lines[@]}"; do
 
 done
 
-echo "var-count=${#_env_names[@]}" >> $GITHUB_OUTPUT
-echo "yaml-keys=$(_join_by "," "${_yaml_keys[@]}")" >> $GITHUB_OUTPUT
-echo "env-names=$(_join_by "," "${_env_names[@]}")" >> $GITHUB_OUTPUT
+echo "var-count=${#_env_names[@]}" >> "$GITHUB_OUTPUT"
+echo "yaml-keys=$(_join_by "," "${_yaml_keys[@]}")" >> "$GITHUB_OUTPUT"
+echo "env-names=$(_join_by "," "${_env_names[@]}")" >> "$GITHUB_OUTPUT"
