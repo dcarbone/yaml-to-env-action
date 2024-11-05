@@ -27,6 +27,7 @@ jobs:
         uses: ./
         with:
           yaml-file: test-values.yaml
+          mask-vars: true
 
       - name: Test env
         run: |
