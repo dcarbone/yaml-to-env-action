@@ -23,44 +23,7 @@
 
 ## Example Workflow
 
-```yaml
-name: YAML to Env Example Workflow
-
-on:
-  workflow_dispatch:
-    inputs:
-      yaml-file:
-        type: string
-        required: false
-        description: "Path to YAML file to parse"
-        default: "test-values.yaml"
-      yq-version:
-        type: string
-        required: false
-        description: "Version of yq to install, if not already"
-      mask-values:
-        type: string
-        required: false
-        default: 'false'
-        description: 'If "true", masks all extracted values.'
-
-jobs:
-  yaml-to-env:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set ENV values from YAML
-        uses: dcarbone/yaml-to-env-action@v2
-        with:
-          yaml-file: '${{ inputs.yaml-file }}'
-          yq-version: '${{ inputs.yq-version }}'
-
-      - name: Print environment variables
-        run: |
-          printenv
-
-```
+You can see an example workflow here: [example.yaml](./example.yaml)
 
 ## Conversion Rules
 
