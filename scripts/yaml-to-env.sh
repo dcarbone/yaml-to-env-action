@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
+# sourced from https://stackoverflow.com/a/17841619
 function _join_by { local IFS="$1"; shift; echo "$*"; }
+
 function _trim() { printf '%s' "${1}" | sed 's/^[[:blank:]]*//; s/[[:blank:]]*$//'; }
 function _ltrim_one { printf '%s' "${1}" | sed 's/^[[:blank:]]//'; }
 function _rtrim_one { printf '%s' "${1}" | sed 's/[[:blank:]]$//'; }
@@ -28,13 +30,6 @@ _write_kv_to_env_file() {
   fi
 }
 
-# sourced from https://stackoverflow.com/a/17841619
-_join_by() {
-  local IFS="$1"
-  shift
-  echo "$*"
-}
-
 _yaml_keys=()
 _env_names=()
 
@@ -59,7 +54,8 @@ for _line in "${_lines[@]}"; do
 
   if [[ "${YAMLTOENV_MASK_VALUES}" == 'true' ]]; then
     # sourced https://dev.to/yuyatakeyama/mask-multiple-lines-text-in-github-actions-workflow-1a0
-    echo "::add-mask::$(echo "$_clean_value" | sed -e 's/\\n/\n/g' | sed ':a;N;$!ba;s/%/%25/g' | sed ':a;N;$!ba;s/\r/%0D/g' | sed ':a;N;$!ba;s/\n/%0A/g')"
+    echo "::add-mask::$(echo "$_clean_value" \
+      | sed -e 's/\\n/\n/g' -e ':a;N;$!ba;s/%/%25/g' -e ':a;N;$!ba;s/\r/%0D/g' -e ':a;N;$!ba;s/\n/%0A/g')"
   fi
 
   _yaml_keys+=("${_key}")
