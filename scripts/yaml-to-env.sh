@@ -55,7 +55,7 @@ for _line in "${_lines[@]}"; do
   if [[ "${YAMLTOENV_MASK_VALUES}" == 'true' ]]; then
     # sourced https://dev.to/yuyatakeyama/mask-multiple-lines-text-in-github-actions-workflow-1a0
     echo "::add-mask::$(echo "$_clean_value" \
-      | sed -e 's/\\n/\n/g' -e ':a;N;$!ba;s/%/%25/g' -e ':a;N;$!ba;s/\r/%0D/g' -e ':a;N;$!ba;s/\n/%0A/g')"
+      | sed -e 's/\\n/\n/g' | sed ':a;N;$!ba;s/%/%25/g' | sed ':a;N;$!ba;s/\r/%0D/g' | sed ':a;N;$!ba;s/\n/%0A/g')"
   fi
 
   _yaml_keys+=("${_key}")
