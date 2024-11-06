@@ -12,21 +12,20 @@ on:
       - 'test-values.yaml'
 
   pull_request:
-    branches:
-      - main
 
 jobs:
   test:
     name: Test Action
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Execute action
-        uses: dcarbone/yaml-to-env-action@main
+        id: y2e
+        uses: ./
         with:
           yaml-file: test-values.yaml
-          debug: 'true'
+          mask-values: "true"
 
       - name: Test env
         run: |
