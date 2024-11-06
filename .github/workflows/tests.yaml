@@ -12,8 +12,6 @@ on:
       - 'test-values.yaml'
 
   pull_request:
-    branches:
-      - main
 
 jobs:
   test:
