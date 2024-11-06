@@ -145,7 +145,7 @@ EOF
   mask-values:
     required: false
     default: "false"
-    description: "Add value masking to all exported envvars (https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#example-masking-an-environment-variable)"
+    description: "Add value masking to all exported environment variable values (https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#example-masking-an-environment-variable)"
 ```
 
 ## Action Outputs
