@@ -57,7 +57,7 @@ for _line in "${_lines[@]}"; do
   _value="$(_join_by '=' "${_split[@]:1}")"
   _clean_value="$(_ltrim_one "${_value}")"
 
-  if [[ "${YAMLTOENV_MASK_VARS}" == 'true' ]]; then
+  if [[ "${YAMLTOENV_MASK_VALUES}" == 'true' ]]; then
     echo "::add-mask::${_clean_value}"
   fi
 

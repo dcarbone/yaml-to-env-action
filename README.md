@@ -13,7 +13,7 @@
   * [Action Inputs](#action-inputs)
       * [yaml-file](#yaml-file)
       * [yq-version](#yq-version)
-      * [mask-vars](#mask-vars)
+      * [mask-values](#mask-values)
   * [Action Outputs](#action-outputs)
       * [yq-installed](#yq-installed)
       * [var-count](#var-count)
@@ -140,9 +140,9 @@ EOF
     description: "Version of yq to install, if not already in path.  Tested with >= 4.25."
 ```
 
-#### mask-vars
+#### mask-values
 ```yaml
-  mask-vars:
+  mask-values:
     required: false
     default: "false"
     description: "Add value masking to all exported envvars (https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/workflow-commands-for-github-actions#example-masking-an-environment-variable)"
