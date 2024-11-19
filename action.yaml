@@ -45,7 +45,7 @@ runs:
 
     - name: 'Install yq (${{ inputs.yq-version }})'
       id: install-yq
-      uses: dcarbone/install-yq-action@v1
+      uses: dcarbone/install-yq-action@v1.3.1
       with:
         version: '${{ inputs.yq-version }}'
 
