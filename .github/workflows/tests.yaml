@@ -21,7 +21,7 @@ jobs:
           - ''
           - 'v4.44.3'
 
-    name: 'Test Action (yq: ${{ matrix.yq-version }}'
+    name: 'Test Action (yq: ${{ matrix.yq-version }})'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
