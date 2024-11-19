@@ -28,6 +28,7 @@ jobs:
           mask-values: "true"
 
       - name: Test env
+        # language=sh
         run: |
           _EXPECTED_ENVS=(
             "STRING"
